@@ -5,6 +5,7 @@ namespace Sofa\ModelLocking;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Session;
 
 /**
  * @package sofa/model-locking
@@ -63,6 +64,9 @@ class ModelLock extends Model
      */
     public function generateToken()
     {
+        if (config('model_locking.use_session_id_as_token', false)) {
+            return Session::getId();
+        }
         return md5((string) $this);
     }
 
