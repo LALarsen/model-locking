@@ -22,7 +22,7 @@ describe('Sofa\ModelLocking\Locking', function () {
     */
 
     it('checks if active lock for model exists', function () {
-        $this->post->modelLock = null;
+        $this->post->activeModelLock = null;
         expect($this->post->isLocked())->toBe(false);
     });
 
@@ -42,7 +42,7 @@ describe('Sofa\ModelLocking\Locking', function () {
 
 
     it('gets null as timestamp and user if model is not locked', function () {
-        $this->post->modelLock = null;
+        $this->post->activeModelLock = null;
         expect($this->post->lockedUntil())->toBeNull();
         expect($this->post->lockedBy())->toBeNull();
     });
@@ -87,7 +87,7 @@ describe('Sofa\ModelLocking\Locking', function () {
 
     it('allows passing user_id as locking user', function () {
         $this->post->lock('11 minutes', 11);
-        expect($this->post->modelLock->user_id)->toBe(11);
+        expect($this->post->activeModelLock->user_id)->toBe(11);
     });
 
 
@@ -95,7 +95,7 @@ describe('Sofa\ModelLocking\Locking', function () {
         $other_user = Stub::create(['implements' => Authenticatable::class]);
         Stub::on($other_user)->method('getAuthIdentifier')->andReturn(99);
         $this->post->lock($other_user);
-        expect($this->post->modelLock->user_id)->toBe(99);
+        expect($this->post->activeModelLock->user_id)->toBe(99);
     });
 
 
@@ -200,7 +200,7 @@ describe('Sofa\ModelLocking\Locking', function () {
     given('post', function () {
         $PostModel = Stub::create(['uses' => Locking::class]);
         $post = new $PostModel;
-        $post->modelLock = $this->lock;
+        $post->activeModelLock = $this->lock;
         $post->relations = ['modelLock' => $this->lock];
         Stub::on($post)->method('getEventDispatcher')->andReturn($this->events);
 

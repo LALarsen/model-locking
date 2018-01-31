@@ -33,7 +33,7 @@ trait Locking
     public function isAccessible($token = null)
     {
         if ($this->isLocked()) {
-            return $this->modelLock->verify($token);
+            return $this->activeModelLock->verify($token);
         }
 
         return true;
@@ -46,8 +46,8 @@ trait Locking
      */
     public function isLocked()
     {
-        return $this->modelLock
-            && $this->modelLock->locked_until->isFuture();
+        return $this->activeModelLock
+            && $this->activeModelLock->locked_until->isFuture();
     }
 
     /**
@@ -58,7 +58,7 @@ trait Locking
     public function lockedUntil()
     {
         if ($this->isLocked()) {
-            return $this->modelLock->locked_until;
+            return $this->activeModelLock->locked_until;
         }
     }
 
@@ -70,7 +70,7 @@ trait Locking
     public function lockedBy()
     {
         if ($this->isLocked()) {
-            return $this->modelLock->user;
+            return $this->activeModelLock->user;
         }
     }
 
@@ -117,7 +117,7 @@ trait Locking
      */
     public function unlock()
     {
-        $this->modelLock()->delete();
+        $this->activeModelLock()->delete();
 
         unset($this->relations['modelLock']);
 
@@ -138,7 +138,7 @@ trait Locking
     public function requestUnlock($user = null, $message = '')
     {
         if ($this->isLocked()) {
-            $this->modelLock->requestUnlock($user, $message);
+            $this->activeModelLock->requestUnlock($user, $message);
 
             return $this->lockedUntil();
         }
@@ -149,8 +149,18 @@ trait Locking
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
-    public function modelLock()
+    public function activeModelLock()
     {
         return $this->morphOne(ModelLock::class, 'model')->active();
+    }
+
+    /**
+     * Relation with the model lock.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function modelLock()
+    {
+        return $this->morphOne(ModelLock::class, 'model');
     }
 }
