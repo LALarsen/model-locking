@@ -106,6 +106,7 @@ class ModelLock extends Model
     {
         $this->locked_until = $this->lockTimestamp($duration);
         $this->user_id = $this->lockingUser($user);
+        $this->token = $this->generateToken();
         $this->save();
 
         return $this;
