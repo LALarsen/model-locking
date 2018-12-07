@@ -99,10 +99,10 @@ trait Locking
             $duration = $this->lock_duration;
         }
 
-        $lock = $this->modelLock()->firstOrNew([])->lock($duration, $user);
+		$lock = $this->modelLock()->firstOrNew([])->lock($duration, $user);
 
         $this->setRelation('modelLock', $lock);
-
+		
         if ($events = $this->getEventDispatcher()) {
             $events->fire(new ModelLocked($this));
         }
@@ -151,7 +151,7 @@ trait Locking
      */
     public function activeModelLock()
     {
-        return $this->morphOne(ModelLock::class, 'model')->active();
+        return $this->morphOne(ModelLock::class, 'model')->lockForUpdate();
     }
 
     /**
@@ -161,6 +161,6 @@ trait Locking
      */
     public function modelLock()
     {
-        return $this->morphOne(ModelLock::class, 'model');
+        return $this->morphOne(ModelLock::class, 'model')->lockForUpdate();
     }
 }

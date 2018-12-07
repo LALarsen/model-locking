@@ -197,7 +197,7 @@ class ModelLock extends Model
      */
     public function scopeActive($query, $active = true)
     {
-        return $query->where('locked_until', ($active ? '>' : '<='), Carbon::now());
+        return $query->where('locked_until', ($active ? '>=' : '<'), Carbon::now());
     }
 
     /**

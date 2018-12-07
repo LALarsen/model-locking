@@ -4,6 +4,7 @@ namespace Sofa\ModelLocking;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\DB;
 
 class FlushExpiredLocks extends Command
 {
@@ -24,14 +25,14 @@ class FlushExpiredLocks extends Command
      */
     public function handle(Dispatcher $events)
     {
-        $unlocked = ModelLock::expired()->with('model')->get()->pluck('model')->toBase()->unique()->filter();
+        DB::connection('product')->beginTransaction();
+		$unlocked = ModelLock::expired()->lockForUpdate()->with('model')->get()->pluck('model')->toBase()->unique()->filter();
 
         ModelLock::expired()->delete();
 
         foreach ($unlocked as $model) {
             $events->fire(new ModelUnlocked($model));
         }
-
-        $this->info('Expired model locks flushed!');
+		DB::connection('product')->commit();
     }
 }
