@@ -26,6 +26,8 @@ class ModelLock extends Model
      */
     protected static function boot()
     {
+        parent::boot();
+
         static::saving(function ($lock) {
             if (!$lock->isDirty('locked_until')) {
                 $lock->locked_until = $lock->lockTimestamp();
