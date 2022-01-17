@@ -17,8 +17,8 @@
     ],
     "require": {
         "php": ">=7.2",
-        "illuminate/database": "^7.0|^7.0",
-        "illuminate/queue": "^7.0|^7.0"
+        "illuminate/database": "^7.0|^8.0",
+        "illuminate/queue": "^7.0|^8.0"
     },
     "require-dev": {
         "kahlan/kahlan": "~2.5"
