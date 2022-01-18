@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.3",
         "illuminate/database": "^7.0|^8.0",
         "illuminate/queue": "^7.0|^8.0"
     },
